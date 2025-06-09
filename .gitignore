@@ -1,0 +1,56 @@
+# Project-specific ignores
+*.log
+*.md
+!README.md
+
+# Test files and development scripts
+test-*.js
+test-*.json
+*-test.js
+*-test.json
+*-test.html
+create-sample-data*.js
+start-backend.*
+
+# Development and testing artifacts
+frontend-test.*
+login-test.json
+new-user.json
+user-test.json
+whatsapp-debug-test.html
+whatsapp-test-summary.js
+
+# Status and completion reports
+*-REPORT.md
+*-COMPLETE.md
+*-STATUS-REPORT.md
+FINAL-STATUS-REPORT.md
+FRONTEND-FIXES-COMPLETE.md
+PRODUCTCARD-ENHANCEMENT-REPORT.md
+REMOVAL-COMPLETION-REPORT.md
+SUBSCRIPTION-IMPLEMENTATION-COMPLETE.md
+SUBSCRIPTION-SYSTEM-COMPLETE.md
+
+# Root level package files (project should be managed within frontend/backend)
+package.json
+package-lock.json
+
+# Node modules in root (shouldn't exist)
+node_modules/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Environment files in root
+.env
+.env.local
+.env.*.local

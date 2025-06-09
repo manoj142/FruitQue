@@ -1,0 +1,14 @@
+// Routes
+router.post('/register', authLimiter, registerValidation, validateRequest, register);
+router.post('/login', authLimiter, loginValidation, validateRequest, login);
+// Test endpoint without validation
+router.post('/login-test', authLimiter, login);
+router.post('/logout', logout);
+router.get('/me', authenticate, getMe);
+router.post('/verify-email', verifyEmailValidation, validateRequest, verifyEmail);
+router.post('/forgot-password', passwordResetLimiter, forgotPasswordValidation, validateRequest, forgotPassword);
+router.post('/reset-password', resetPasswordValidation, validateRequest, resetPassword);
+router.put('/change-password', authenticate, changePasswordValidation, validateRequest, changePassword);
+router.put('/profile', authenticate, updateProfileValidation, validateRequest, updateProfile);
+
+export default router;

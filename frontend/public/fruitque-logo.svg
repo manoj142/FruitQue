@@ -1,0 +1,46 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="58" fill="#f8f9fa" stroke="#4ade80" stroke-width="4"/>
+  
+  <!-- Orange slice -->
+  <g transform="translate(25, 25)">
+    <circle cx="25" cy="25" r="22" fill="#fb923c"/>
+    <path d="M 25 3 L 25 47" stroke="#fff" stroke-width="2"/>
+    <path d="M 15 13 L 35 37" stroke="#fff" stroke-width="2"/>
+    <path d="M 35 13 L 15 37" stroke="#fff" stroke-width="2"/>
+    <path d="M 3 25 L 47 25" stroke="#fff" stroke-width="2"/>
+  </g>
+  
+  <!-- Kiwi slice -->
+  <g transform="translate(65, 25)">
+    <circle cx="25" cy="25" r="22" fill="#84cc16"/>
+    <circle cx="25" cy="25" r="15" fill="#a3e635"/>
+    <circle cx="25" cy="25" r="8" fill="#d9f99d"/>
+    <circle cx="22" cy="20" r="1" fill="#365314"/>
+    <circle cx="28" cy="22" r="1" fill="#365314"/>
+    <circle cx="25" cy="30" r="1" fill="#365314"/>
+    <circle cx="20" cy="28" r="1" fill="#365314"/>
+    <circle cx="30" cy="28" r="1" fill="#365314"/>
+  </g>
+  
+  <!-- Grapefruit slice -->
+  <g transform="translate(25, 65)">
+    <circle cx="25" cy="25" r="22" fill="#f87171"/>
+    <path d="M 25 3 L 25 47" stroke="#fff" stroke-width="2"/>
+    <path d="M 15 13 L 35 37" stroke="#fff" stroke-width="2"/>
+    <path d="M 35 13 L 15 37" stroke="#fff" stroke-width="2"/>
+    <path d="M 3 25 L 47 25" stroke="#fff" stroke-width="2"/>
+  </g>
+  
+  <!-- Lemon slice -->
+  <g transform="translate(65, 65)">
+    <circle cx="25" cy="25" r="22" fill="#fde047"/>
+    <path d="M 25 3 L 25 47" stroke="#fff" stroke-width="2"/>
+    <path d="M 15 13 L 35 37" stroke="#fff" stroke-width="2"/>
+    <path d="M 35 13 L 15 37" stroke="#fff" stroke-width="2"/>
+    <path d="M 3 25 L 47 25" stroke="#fff" stroke-width="2"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="60" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#059669">FruitQue</text>
+</svg>
