@@ -32,7 +32,6 @@ SUBSCRIPTION-IMPLEMENTATION-COMPLETE.md
 SUBSCRIPTION-SYSTEM-COMPLETE.md
 
 # Root level package files (project should be managed within frontend/backend)
-package.json
 package-lock.json
 
 # Node modules in root (shouldn't exist)
