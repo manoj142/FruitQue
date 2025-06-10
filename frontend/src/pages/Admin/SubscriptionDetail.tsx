@@ -228,10 +228,8 @@ const AdminSubscriptionDetail: React.FC = () => {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
                 {currentSubscription.name}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Created on
-                {new Date(currentSubscription.createdAt).toLocaleDateString()}
+              </h1>              <p className="text-gray-600 mt-1">
+                Created on {currentSubscription.createdAt ? new Date(currentSubscription.createdAt).toLocaleDateString() : 'Unknown date'}
               </p>
               <p className="text-sm text-gray-500 mt-1">
                 Subscription ID: {currentSubscription._id}
@@ -256,85 +254,99 @@ const AdminSubscriptionDetail: React.FC = () => {
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - Items and Details */}
-            <div className="space-y-6">
-              {/* Subscription Items */}
+            <div className="space-y-6">              {/* Subscription Items */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Items in this subscription
                 </h3>
-                <div className="space-y-3">
-                  {currentSubscription.items.map((item: any, index: number) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
-                    >
-                      <img
-                        src={item.product.image || "/placeholder-fruit.jpg"}
-                        alt={item.product.name}
-                        className="w-16 h-16 rounded-lg object-cover"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">
-                          {item.product.name}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {item.product.category}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Quantity: {item.quantity} • ₹{item.price.toFixed(2)}
-                          each
-                        </p>
+                {currentSubscription.items && currentSubscription.items.length > 0 ? (
+                  <div className="space-y-3">
+                    {currentSubscription.items.map((item: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
+                      >
+                        <img
+                          src={item.product?.image || item.product?.images?.[0] || "/placeholder-fruit.jpg"}
+                          alt={item.product?.name || "Product"}
+                          className="w-16 h-16 rounded-lg object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/placeholder-fruit.jpg";
+                          }}
+                        />
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">
+                            {item.product?.name || "Product Unavailable"}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {item.product?.category || item.product?.productType || "Unknown Category"}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Quantity: {item.quantity} • ₹{(item.price || 0).toFixed(2)} each
+                          </p>
+                          {!item.product && (
+                            <p className="text-xs text-red-500 mt-1">
+                              ⚠️ This product is no longer available
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-gray-900 text-lg">
+                            ₹{((item.quantity || 0) * (item.price || 0)).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium text-gray-900 text-lg">
-                          ₹{(item.quantity * item.price).toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-yellow-800 text-center">
+                      No items found in this subscription.
+                    </p>
+                  </div>
+                )}                <div className="mt-4 p-4 bg-green-50 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold text-gray-900">
                       Total Amount:
                     </span>
                     <span className="text-xl font-bold text-green-600">
-                      ₹{currentSubscription.totalAmount.toFixed(2)}
+                      ₹{(currentSubscription.totalAmount || 0).toFixed(2)}
                     </span>
                   </div>
                 </div>
-              </div>
-
-              {/* Delivery Schedule */}
+              </div>              {/* Delivery Schedule */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Delivery Schedule
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <CalendarIcon className="w-5 h-5 text-blue-500 mr-3" />
-                    <div>
-                      <p className="text-sm text-gray-600">Next Delivery</p>
-                      <p className="font-medium text-gray-900">
-                        {new Date(
-                          currentSubscription.nextDeliveryDate
-                        ).toLocaleDateString()}
-                      </p>
+                  {currentSubscription.nextDeliveryDate && (
+                    <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                      <CalendarIcon className="w-5 h-5 text-blue-500 mr-3" />
+                      <div>
+                        <p className="text-sm text-gray-600">Next Delivery</p>
+                        <p className="font-medium text-gray-900">
+                          {new Date(
+                            currentSubscription.nextDeliveryDate
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <CalendarIcon className="w-5 h-5 text-green-500 mr-3" />
-                    <div>
-                      <p className="text-sm text-gray-600">Start Date</p>
-                      <p className="font-medium text-gray-900">
-                        {new Date(
-                          currentSubscription.startDate
-                        ).toLocaleDateString()}
-                      </p>
+                  {currentSubscription.startDate && (
+                    <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                      <CalendarIcon className="w-5 h-5 text-green-500 mr-3" />
+                      <div>
+                        <p className="text-sm text-gray-600">Start Date</p>
+                        <p className="font-medium text-gray-900">
+                          {new Date(
+                            currentSubscription.startDate
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {currentSubscription.lastDeliveryDate && (
                     <div className="flex items-center p-3 bg-gray-50 rounded-lg">
@@ -363,59 +375,79 @@ const AdminSubscriptionDetail: React.FC = () => {
                       </div>
                     </div>
                   )}
+
+                  {!currentSubscription.nextDeliveryDate && !currentSubscription.startDate && (
+                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-yellow-800 text-center">
+                        Delivery schedule information is not available.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Right Column - Customer & Delivery Info */}
-            <div className="space-y-6">
-              {/* Customer Information */}
+            <div className="space-y-6">              {/* Customer Information */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Customer Information
                 </h3>
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                  <div className="flex items-start">
-                    <UserIcon className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {currentSubscription.customerDetails.firstName}
-                        {currentSubscription.customerDetails.lastName}
-                      </p>
+                {currentSubscription.customerDetails ? (
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="flex items-start">
+                      <UserIcon className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {currentSubscription.customerDetails.firstName || ''} {currentSubscription.customerDetails.lastName || ''}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-start">
-                    <MapPinIcon className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
-                    <div>
-                      <p className="text-gray-900">
-                        {currentSubscription.customerDetails.address}
-                      </p>
-                      <p className="text-gray-600">
-                        {currentSubscription.customerDetails.city},
-                        {currentSubscription.customerDetails.state}
-                        {currentSubscription.customerDetails.zipCode}
-                      </p>
-                    </div>
-                  </div>
+                    {currentSubscription.customerDetails.address && (
+                      <div className="flex items-start">
+                        <MapPinIcon className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
+                        <div>
+                          <p className="text-gray-900">
+                            {currentSubscription.customerDetails.address}
+                          </p>
+                          <p className="text-gray-600">
+                            {[
+                              currentSubscription.customerDetails.city,
+                              currentSubscription.customerDetails.state,
+                              currentSubscription.customerDetails.zipCode
+                            ].filter(Boolean).join(', ')}
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
-                  <div className="flex items-center">
-                    <PhoneIcon className="w-5 h-5 text-gray-400 mr-3" />
-                    <p className="text-gray-900">
-                      {currentSubscription.customerDetails.phone}
+                    {currentSubscription.customerDetails.phone && (
+                      <div className="flex items-center">
+                        <PhoneIcon className="w-5 h-5 text-gray-400 mr-3" />
+                        <p className="text-gray-900">
+                          {currentSubscription.customerDetails.phone}
+                        </p>
+                      </div>
+                    )}
+
+                    {currentSubscription.customerDetails.email && (
+                      <div className="flex items-center">
+                        <EnvelopeIcon className="w-5 h-5 text-gray-400 mr-3" />
+                        <p className="text-gray-900">
+                          {currentSubscription.customerDetails.email}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-yellow-800 text-center">
+                      Customer information is not available.
                     </p>
                   </div>
-
-                  <div className="flex items-center">
-                    <EnvelopeIcon className="w-5 h-5 text-gray-400 mr-3" />
-                    <p className="text-gray-900">
-                      {currentSubscription.customerDetails.email}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Payment Information */}
+                )}
+              </div>              {/* Payment Information */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Payment Information
@@ -426,7 +458,7 @@ const AdminSubscriptionDetail: React.FC = () => {
                     <div>
                       <p className="text-sm text-gray-600">Payment Method</p>
                       <p className="font-medium text-gray-900 capitalize">
-                        {currentSubscription.paymentMethod}
+                        {currentSubscription.paymentMethod || "Not specified"}
                       </p>
                     </div>
                   </div>

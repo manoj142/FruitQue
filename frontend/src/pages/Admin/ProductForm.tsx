@@ -98,20 +98,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     if (!formData.images[0] || !formData.images[0].trim()) {
       errors.images = "At least one image URL is required";
-    }
-
-    // Product type specific validation
+    } // Product type specific validation
     if (formData.productType === "fruit") {
       if (!formData.season.trim()) {
         errors.season = "Season is required for fruit products";
       }
     } else if (formData.productType === "bowl") {
-      if (
-        (formData.isCustomizable || formData.hasSubscription) &&
-        formData.subProducts.length === 0
-      ) {
-        errors.subProducts =
-          "Please select fruits for customizable or subscription bowls";
+      // Only require fruits for customizable bowls, not for subscription products
+      if (formData.isCustomizable && formData.subProducts.length === 0) {
+        errors.subProducts = "Please select fruits for customizable bowls";
       }
     }
 
@@ -210,7 +205,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: type === "number" ? parseFloat(value) || 0 : value,
+        [name]:
+          type === "number"
+            ? value === ""
+              ? ""
+              : parseFloat(value) || 0
+            : value,
       }));
     }
   };
@@ -346,11 +346,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                       Can be 0 for fruits used only in bowls
                     </small>
                   )}
-                </label>
+                </label>{" "}
                 <input
                   type="number"
                   name="price"
-                  value={formData.price}
+                  value={formData.price === 0 ? "" : formData.price}
                   onChange={handleInputChange}
                   step="0.01"
                   min="0"
@@ -359,6 +359,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                       ? "border-red-500"
                       : "border-gray-300"
                   }`}
+                  placeholder="Enter price"
                 />
                 {validationErrors.price && (
                   <p className="text-red-500 text-sm mt-1">
@@ -370,15 +371,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Original Price (₹)
-                </label>
+                </label>{" "}
                 <input
                   type="number"
                   name="originalPrice"
-                  value={formData.originalPrice}
+                  value={
+                    formData.originalPrice === 0 ? "" : formData.originalPrice
+                  }
                   onChange={handleInputChange}
                   step="0.01"
                   min="0"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter original price"
                 />
               </div>
             </div>
@@ -386,15 +390,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Discount (%)
-              </label>
+              </label>{" "}
               <input
                 type="number"
                 name="discount"
-                value={formData.discount}
+                value={formData.discount === 0 ? "" : formData.discount}
                 onChange={handleInputChange}
                 min="0"
                 max="100"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter discount percentage"
               />
             </div>
           </div>
@@ -446,7 +451,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               🥗 Bowl Specific Details
             </h3>
-
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="flex items-center">
                 <input
@@ -479,7 +483,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 </label>
               </div>
             </div>
-
             {/* Max SubProducts field for customizable bowls */}
             {formData.isCustomizable && (
               <div className="mb-4">
@@ -488,11 +491,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   <small className="block text-gray-500">
                     Maximum number of different fruits customers can select
                   </small>
-                </label>
+                </label>{" "}
                 <input
                   type="number"
                   name="maxSubProducts"
-                  value={formData.maxSubProducts}
+                  value={
+                    formData.maxSubProducts === 0 ? "" : formData.maxSubProducts
+                  }
                   onChange={handleInputChange}
                   min="1"
                   max="20"
@@ -500,15 +505,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   placeholder="5"
                 />
               </div>
-            )}
-
+            )}{" "}
             {(formData.isCustomizable || formData.hasSubscription) && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Fruits for this Bowl *
+                  Select Fruits for this Bowl{" "}
+                  {formData.isCustomizable && !formData.hasSubscription
+                    ? "*"
+                    : ""}
+                  {formData.hasSubscription && !formData.isCustomizable && (
+                    <span className="text-sm text-gray-500 font-normal">
+                      {" "}
+                      (Optional for subscription products)
+                    </span>
+                  )}
+                  {formData.isCustomizable && (
+                    <span className="text-sm text-gray-500 font-normal">
+                      {" "}
+                      (Required for customizable bowls)
+                    </span>
+                  )}
                 </label>
                 <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3">
-                  
                   {fruitProducts.length > 0 ? (
                     fruitProducts.map((fruit: Product) => {
                       // Debug which fruits are in the subProducts array

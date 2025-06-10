@@ -38,7 +38,7 @@ app.use(helmet({
 app.options('*', cors()); // Enable preflight for all routes
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'],
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000','https://fruitque-front-end.onrender.com','https://fruitque.in'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token', 'Access-Control-Allow-Origin'],
@@ -59,7 +59,6 @@ app.use(rateLimiter);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
   
@@ -139,5 +138,5 @@ process.on('SIGINT', () => {
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-  console.log(`📱 API endpoints available at http://localhost:${PORT}/api`);
+  console.log(`📱 API endpoints available at `);
 });

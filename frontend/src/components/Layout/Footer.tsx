@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchStore } from "../../store/slices/storeSlice";
+import Logo from "../UI/Logo";
 import {
   MapPinIcon,
   PhoneIcon,
@@ -24,23 +25,8 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}{" "}
-          <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <img
-                src="/fruitque-logo.png"
-                alt="FruitQue Logo"
-                className="w-8 h-8 rounded-full object-cover"
-                onError={(e) => {
-                  // Fallback to gradient circle if logo image fails to load
-                  e.currentTarget.style.display = "none";
-                  const fallback = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = "flex";
-                }}
-              />
-              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full items-center justify-center hidden">
-                <span className="text-white font-bold text-sm">FQ</span>
-              </div>
+          <div>            <div className="flex items-center space-x-2 mb-4">
+              <Logo size="md" showText={false} />
               <span className="text-xl font-bold">
                 {store?.name || "FruitQue"}
               </span>

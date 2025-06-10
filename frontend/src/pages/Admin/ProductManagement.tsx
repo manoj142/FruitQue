@@ -339,30 +339,50 @@ const AdminProductManagement: React.FC = () => {
       {/* Summary */}
       <div className="mt-4 text-sm text-gray-600 text-center">
         Showing {products.length} of {pagination.totalProducts} products
-      </div>
-      {/* Delete Confirmation Modal */}
+      </div>      {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Confirm Delete
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this product? This action cannot
-              be undone.
-            </p>
-            <div className="flex gap-4">
+        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-2 sm:p-4">
+          <div 
+            className="bg-white bg-opacity-95 backdrop-blur-sm rounded-xl sm:rounded-2xl w-full max-w-sm sm:max-w-md mx-2 sm:mx-auto transform transition-all duration-300 ease-out shadow-2xl border border-white border-opacity-20"
+            onClick={(e) => e.stopPropagation()}
+          >            {/* Header */}
+            <div className="p-4 sm:p-6 border-b border-gray-100 border-opacity-30">
+              <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-red-100 bg-opacity-80 rounded-full backdrop-blur-sm">
+                <svg 
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 text-center">
+                Delete Product
+              </h3>
+            </div>            {/* Content */}
+            <div className="p-4 sm:p-6">
+              <p className="text-sm sm:text-base text-gray-600 text-center leading-relaxed">
+                Are you sure you want to delete this product? This action cannot be undone and will permanently remove all associated data.
+              </p>
+            </div>            {/* Actions */}
+            <div className="p-4 sm:p-6 bg-gray-50 bg-opacity-60 backdrop-blur-sm rounded-b-xl sm:rounded-b-2xl flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                className="w-full sm:flex-1 px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 border-opacity-60 rounded-lg sm:rounded-xl text-gray-700 font-medium bg-white bg-opacity-80 hover:bg-opacity-100 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 backdrop-blur-sm text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
-                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                className="w-full sm:flex-1 px-4 sm:px-6 py-2.5 sm:py-3 bg-red-600 bg-opacity-90 text-white rounded-lg sm:rounded-xl font-medium hover:bg-opacity-100 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm text-sm sm:text-base"
               >
-                Delete
+                Delete Product
               </button>
             </div>
           </div>

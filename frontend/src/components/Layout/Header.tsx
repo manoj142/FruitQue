@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux";
 import { logout } from "../../store/slices/authSlice";
+import Logo from "../UI/Logo";
 import {
   ShoppingCartIcon,
   UserIcon,
@@ -24,26 +25,10 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img
-              src="/fruitque-logo.png"
-              alt="FruitQue Logo"
-              className="w-8 h-8 rounded-full object-cover"
-              onError={(e) => {
-                // Fallback to gradient circle if logo image fails to load
-                e.currentTarget.style.display = "none";
-                const fallback = e.currentTarget
-                  .nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = "flex";
-              }}
-            />
-            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full items-center justify-center hidden">
-              <span className="text-white font-bold text-sm">FQ</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">FruitQue</span>
+            <Logo size="md" />
           </Link>
           {/* Place Order Button - Show when cart has items */}
           {totalItems > 0 && (

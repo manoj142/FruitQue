@@ -179,36 +179,49 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }
     }
   };
-
   return (
     <div className="group" ref={cardRef}>
-      <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 group-hover:border-green-200">
+      <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-green-300 group-hover:-translate-y-1">
         {/* Image Container */}
-        <div className="relative overflow-hidden bg-gray-50">
+                  {/* Image Container */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-green-50 to-orange-50 h-48 flex items-center justify-center">
           <img
             src={
               product.images[0] ||
               "http://localhost:5000/api/placeholder/300/250"
             }
             alt={product.name}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
         {/* Content */}
-        <div className="p-4">
-          <h3 className="font-semibold text-gray-900 mb-1 text-xl">
+        <div className="p-5">
+          <h3 className="font-bold text-gray-900 mb-2 text-lg leading-tight">
             {product.name}
-          </h3>
+          </h3>          {/* Product Description */}
+          {product.description && (
+            <div className="mb-3 bg-gray-50 rounded-lg p-3 border-l-4 border-green-400">
+              <div className="text-sm text-gray-700 leading-relaxed space-y-1">
+                {product.description
+                  .split(',')
+                  .filter(point => point.trim())
+                  .map((point, index) => (
+                    <div key={index} className="flex items-start space-x-2">
+                      <span className="text-green-500 font-bold mt-0.5 text-xs">•</span>
+                      <span className="flex-1">{point.trim()}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
           {/* Price */}
-          <div className="mb-3">
+          <div className="mb-4">
             <div className="flex items-center">
-              <span className="text-lg font-bold">
-                ₹{product.price.toFixed(0)}
+              <span className="text-2xl font-bold text-green-600">
+                ₹{product.price > 0 ? product.price.toFixed(0) : "0"}
               </span>
             </div>
-          </div>
-
-          {/* Add to Cart Button Logic:
+          </div>          {/* Add to Cart Button Logic:
               - Regular products: Show ADD button only when NOT in cart
               - Customizable bowls: Show ADD button only when NOT in cart (opens modal)
               - Subscription products: Show ADD button only when NOT in cart
@@ -234,15 +247,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-2 mt-2">
               <button
                 onClick={handleDecreaseQuantity}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
               >
                 <span className="text-lg font-bold">-</span>
-              </button>{" "}
+              </button>
               <div className="flex flex-col items-center">
                 <span className="text-sm font-medium text-green-700">
-                  {isCustomizableBowl
-                    ? `${cartQuantity} customized`
-                    : `${cartQuantity} in cart`}
+                  {cartQuantity} in cart
                 </span>
                 <span className="text-xs text-green-600">
                   ₹{(product.price * cartQuantity).toFixed(0)}

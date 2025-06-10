@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { login, clearError } from "../../store/slices/authSlice";
 import { toast } from "../../components/UI/Toast";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
+import Logo from "../../components/UI/Logo";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 interface LoginFormData {
@@ -67,27 +68,11 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          
-          <Link
+            <Link
             to="/"
             className="flex items-center justify-center space-x-2 mb-6"
           >
-            <img
-              src="/fruitque-logo.png"
-              alt="FruitQue Logo"
-              className="w-10 h-10 rounded-full object-cover"
-              onError={(e) => {
-                // Fallback to gradient circle if logo image fails to load
-                e.currentTarget.style.display = "none";
-                const fallback = e.currentTarget
-                  .nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = "flex";
-              }}
-            />
-            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full items-center justify-center hidden">
-              <span className="text-white font-bold">FQ</span>
-            </div>
-            <span className="text-2xl font-bold text-gray-900">FruitQue</span>
+            <Logo size="lg" />
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
           <p className="mt-2 text-sm text-gray-600">
