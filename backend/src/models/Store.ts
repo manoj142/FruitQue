@@ -7,6 +7,8 @@ export interface IStore extends Document {
   email: string;
   instagram?: string;
   description?: string;
+  openingTime?: string;
+  closingTime?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -48,6 +50,16 @@ const StoreSchema: Schema = new Schema(
       type: String,
       trim: true,
       maxlength: [500, 'Description cannot exceed 500 characters']
+    },
+    openingTime: {
+      type: String,
+      trim: true,
+      default: '09:00'
+    },
+    closingTime: {
+      type: String,
+      trim: true,
+      default: '20:00'
     },
     isActive: {
       type: Boolean,

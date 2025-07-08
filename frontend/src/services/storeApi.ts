@@ -8,6 +8,8 @@ export interface Store {
   email: string;
   instagram?: string;
   description?: string;
+  openingTime?: string;
+  closingTime?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -20,6 +22,8 @@ export interface CreateStoreData {
   email: string;
   instagram?: string;
   description?: string;
+  openingTime?: string;
+  closingTime?: string;
 }
 
 export const storeApi = {

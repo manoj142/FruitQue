@@ -136,11 +136,11 @@ const AdminSubscriptions: React.FC = () => {
         subscription.nextDeliveryDate
       ).toLocaleDateString(),
       Items: subscription.items
-        .map(
+        ?.map(
           (item: any) =>
             `${item.product?.name || item.product} x${item.quantity}`
         )
-        .join("; "),
+        .join("; ") || "No items",
     }));
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
@@ -426,15 +426,14 @@ const AdminSubscriptions: React.FC = () => {
                         {subscription.name}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {subscription.items.length} items
+                        {subscription.items?.length || 0} items
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {subscription.customerDetails.firstName}
-                        {subscription.customerDetails.lastName}
+                        {subscription.customerDetails.firstName} {subscription.customerDetails.lastName}
                       </div>
                       <div className="text-sm text-gray-500">
                         {subscription.customerDetails.email}

@@ -18,6 +18,8 @@ const StoreManagement: React.FC = () => {
     email: "",
     instagram: "",
     description: "",
+    openingTime: "09:00",
+    closingTime: "20:00",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -35,6 +37,8 @@ const StoreManagement: React.FC = () => {
         email: store.email || "",
         instagram: store.instagram || "",
         description: store.description || "",
+        openingTime: store.openingTime || "09:00",
+        closingTime: store.closingTime || "20:00",
       });
     }
   }, [store]);
@@ -75,6 +79,19 @@ const StoreManagement: React.FC = () => {
         email: store.email || "",
         instagram: store.instagram || "",
         description: store.description || "",
+        openingTime: store.openingTime || "09:00",
+        closingTime: store.closingTime || "20:00",
+      });
+    } else {
+      setFormData({
+        name: "",
+        location: "",
+        contact: "",
+        email: "",
+        instagram: "",
+        description: "",
+        openingTime: "09:00",
+        closingTime: "20:00",
       });
     }
   };
@@ -198,6 +215,42 @@ const StoreManagement: React.FC = () => {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="openingTime"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Opening Time
+              </label>
+              <input
+                type="time"
+                id="openingTime"
+                name="openingTime"
+                value={formData.openingTime}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="closingTime"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Closing Time
+              </label>
+              <input
+                type="time"
+                id="closingTime"
+                name="closingTime"
+                value={formData.closingTime}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
           <div>
             <label
               htmlFor="location"
@@ -284,6 +337,15 @@ const StoreManagement: React.FC = () => {
               </h3>
               <p className="text-lg text-gray-900">
                 {store?.instagram || "Not set"}
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">
+                Store Hours
+              </h3>
+              <p className="text-lg text-gray-900">
+                {store?.openingTime || "09:00"} - {store?.closingTime || "20:00"}
               </p>
             </div>
           </div>

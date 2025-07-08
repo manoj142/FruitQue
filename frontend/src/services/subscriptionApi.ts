@@ -43,7 +43,7 @@ export interface UpdateSubscriptionData {
   };
   paymentMethod?: string;
   deliveryInstructions?: string;
-  status?: 'active' | 'paused' | 'cancelled';
+  status?: 'active' | 'paused' | 'cancelled' | 'expired';
 }
 
 export interface Subscription {

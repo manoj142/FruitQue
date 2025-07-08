@@ -4,13 +4,12 @@ import { fetchStore } from "../../store/slices/storeSlice";
 import Logo from "../UI/Logo";
 import {
   MapPinIcon,
-  PhoneIcon,
   EnvelopeIcon,
   HeartIcon,
   ShieldCheckIcon,
   TruckIcon
 } from "@heroicons/react/24/outline";
-import { FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -82,13 +81,27 @@ const Footer: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center">
-                <PhoneIcon className="h-5 w-5 text-green-400 mr-3" />
-                <a
-                  href={`tel:${store?.contact || "+1234567890"}`}
-                  className="text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  {store?.contact || "+1 (234) 567-890"}
-                </a>
+                <FaWhatsapp className="h-5 w-5 text-green-400 mr-3" />
+                <div className="flex items-center space-x-3">
+                  {store?.contact ? (
+                    <a
+                      href={`https://wa.me/${store.contact.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-300 hover:text-green-400 transition-colors flex items-center space-x-2"
+                      title="Contact us on WhatsApp"
+                    >
+                      <span>{store.contact}</span>
+                    </a>
+                  ) : (
+                    <a
+                      href="tel:+1234567890"
+                      className="text-gray-300 hover:text-green-400 transition-colors"
+                    >
+                      +1 (234) 567-890
+                    </a>
+                  )}
+                </div>
               </div>
               <div className="flex items-center">
                 <EnvelopeIcon className="h-5 w-5 text-green-400 mr-3" />
@@ -123,7 +136,7 @@ const Footer: React.FC = () => {
               <div>
                 <h4 className="font-semibold">Morning Delivery</h4>
                 <p className="text-gray-400 text-sm">
-                  Fresh delivery 6AM - 10AM, always free! 😊
+                  Fresh delivery 5.30AM - 11.30AM, always free! 😊
                 </p>
               </div>
             </div>

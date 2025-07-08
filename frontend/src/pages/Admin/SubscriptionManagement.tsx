@@ -19,6 +19,7 @@ import {
   getDueSubscriptions,
   getSubscriptionStats,
   deleteSubscription,
+  updateSubscription,
 } from "../../store/slices/subscriptionSlice";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import { toast } from "../../components/UI/Toast";
@@ -32,6 +33,7 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   MagnifyingGlassIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 import type { RootState } from "../../store";
 import type { Subscription } from "../../services/subscriptionApi";
@@ -50,6 +52,7 @@ const AdminSubscriptions: React.FC = () => {
   });
   const [showDueOnly, setShowDueOnly] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [updateExpiredLoading, setUpdateExpiredLoading] = useState(false);
 
   useEffect(() => {
     if (user?.role === "admin") {
@@ -97,6 +100,73 @@ const AdminSubscriptions: React.FC = () => {
     } finally {
       setDeleteLoading(null);
     }
+  };
+
+  const handleUpdateExpiredSubscriptions = async () => {
+    const currentDate = new Date();
+    const expiredSubscriptions = displaySubscriptions.filter((subscription: Subscription) => {
+      if (!subscription.endDate || subscription.status === 'expired') return false;
+      const endDate = new Date(subscription.endDate);
+      return endDate < currentDate && (subscription.status === 'active' || subscription.status === 'paused');
+    });
+
+    if (expiredSubscriptions.length === 0) {
+      toast.success("No subscriptions need to be updated to expired status");
+      return;
+    }
+
+    if (!confirm(
+      `Are you sure you want to update ${expiredSubscriptions.length} subscription(s) to expired status? This action will change all subscriptions that have passed their end date.`
+    )) {
+      return;
+    }
+
+    setUpdateExpiredLoading(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    try {
+      for (const subscription of expiredSubscriptions) {
+        try {
+          await dispatch(updateSubscription({
+            id: subscription._id,
+            data: { status: 'expired' }
+          })).unwrap();
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          console.error(`Failed to update subscription ${subscription._id}:`, error);
+        }
+      }
+
+      if (successCount > 0) {
+        toast.success(`Successfully updated ${successCount} subscription(s) to expired status`);
+        // Refresh the data
+        if (showDueOnly) {
+          dispatch(getDueSubscriptions());
+        } else {
+          dispatch(getAllSubscriptions(filters));
+        }
+        dispatch(getSubscriptionStats());
+      }
+
+      if (errorCount > 0) {
+        toast.error(`Failed to update ${errorCount} subscription(s)`);
+      }
+    } catch (error) {
+      toast.error("Failed to update expired subscriptions");
+    } finally {
+      setUpdateExpiredLoading(false);
+    }
+  };
+
+  const getExpiredSubscriptionsCount = () => {
+    const currentDate = new Date();
+    return displaySubscriptions.filter((subscription: Subscription) => {
+      if (!subscription.endDate || subscription.status === 'expired') return false;
+      const endDate = new Date(subscription.endDate);
+      return endDate < currentDate && (subscription.status === 'active' || subscription.status === 'paused');
+    }).length;
   };  const handleExport = (format: "csv" | "xlsx") => {
     // Prepare data for export - use the displaySubscriptions calculated below
     const currentDisplaySubscriptions = showDueOnly
@@ -115,6 +185,10 @@ const AdminSubscriptions: React.FC = () => {
       "Next Delivery": new Date(
         subscription.nextDeliveryDate
       ).toLocaleDateString(),
+      "End Date": new Date(
+        subscription.endDate
+      ).toLocaleDateString(),
+      "Delivery Instructions": subscription.deliveryInstructions || "N/A",
       Items: subscription.items
         .map(
           (item: any) =>
@@ -153,7 +227,7 @@ const AdminSubscriptions: React.FC = () => {
       case "cancelled":
         return "bg-red-100 text-red-800";
       case "expired":
-        return "bg-gray-100 text-gray-800";
+        return "bg-red-200 text-red-900";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -347,147 +421,88 @@ const AdminSubscriptions: React.FC = () => {
             </div>
           </div>        </div>
         
-        {/* Export Buttons */}
-        <div className="flex flex-wrap gap-2 justify-end mb-4 sm:mb-6">
-          <button
-            onClick={() => handleExport("csv")}
-            className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap text-sm sm:text-base"
-          >
-            Download CSV
-          </button>
-          <button
-            onClick={() => handleExport("xlsx")}
-            className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-600 transition-colors whitespace-nowrap text-sm sm:text-base"
-          >
-            Download XLSX
-          </button>
+        {/* Export Buttons and Actions */}
+        <div className="flex flex-wrap gap-2 justify-between items-center mb-4 sm:mb-6">
+          <div className="flex flex-wrap gap-2">
+            {getExpiredSubscriptionsCount() > 0 && (
+              <button
+                onClick={handleUpdateExpiredSubscriptions}
+                disabled={updateExpiredLoading}
+                className="bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              >
+                {updateExpiredLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <ClockIcon className="w-4 h-4 mr-2" />
+                    Update Expired ({getExpiredSubscriptionsCount()})
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleExport("csv")}
+              className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap text-sm sm:text-base"
+            >
+              Download CSV
+            </button>
+            <button
+              onClick={() => handleExport("xlsx")}
+              className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-600 transition-colors whitespace-nowrap text-sm sm:text-base"
+            >
+              Download XLSX
+            </button>
+          </div>
         </div>
 
-        {/* Subscriptions Table */}
+        {/* Responsive Table: Always a real table, scrollable on mobile */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">              <thead className="bg-gray-50">
+          <div className="w-full overflow-x-auto">
+            <table className="min-w-[900px] w-full divide-y divide-gray-200 text-xs sm:text-sm">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="hidden md:table-cell px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[180px]">
-                    Customer
-                  </th>
-                  <th className="hidden xl:table-cell px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
-                    Phone
-                  </th>
-                  <th className="hidden lg:table-cell px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                    Type
-                  </th>
-                  <th className="px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                    Status
-                  </th>
-                  <th className="hidden sm:table-cell px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                    Amount
-                  </th>
-                  <th className="hidden lg:table-cell px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
-                    Next Delivery
-                  </th>
-                  <th className="px-2 sm:px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                    Actions
-                  </th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Customer</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Phone</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Type</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Status</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Amount</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Next Delivery</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">End Date</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Delivery Instructions</th>
+                  <th className="px-2 py-2 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-normal break-words">Actions</th>
                 </tr>
-              </thead><tbody className="bg-white divide-y divide-gray-200">
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {displaySubscriptions.map((subscription: Subscription) => (
-                  <tr key={subscription._id} className="hover:bg-gray-50">                    <td className="hidden md:table-cell px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap min-w-[180px]">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs sm:text-sm font-medium text-green-600">
-                            {subscription.customerDetails.firstName.charAt(0).toUpperCase()}
-                          </span>
+                  <tr key={subscription._id} className="hover:bg-gray-50">
+                    <td className="px-2 py-2 align-top whitespace-normal break-words">
+                      <div className="flex items-start gap-2">
+                        <div className="h-7 w-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
+                          <span className="text-xs font-medium text-green-600">{subscription.customerDetails.firstName.charAt(0).toUpperCase()}</span>
                         </div>
-                        <div className="ml-2 sm:ml-3 min-w-0">
-                          <div className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-[150px]">
-                            {subscription.customerDetails.firstName} {subscription.customerDetails.lastName}
-                          </div>
-                          <div className="text-xs sm:text-sm text-gray-500 truncate max-w-[150px]">
-                            {subscription.customerDetails.email}
-                          </div>
-                          <div className="text-xs text-green-600 font-medium truncate max-w-[150px]">
-                            {subscription.name}
-                          </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-gray-900 break-words">{subscription.customerDetails.firstName} {subscription.customerDetails.lastName}</div>
+                          <div className="text-xs text-gray-500 break-words">{subscription.customerDetails.email}</div>
+                          <div className="text-xs text-green-600 font-medium break-words">{subscription.name}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="md:hidden px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap min-w-[200px]">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs sm:text-sm font-medium text-green-600">
-                            {subscription.customerDetails.firstName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="ml-2 sm:ml-3 min-w-0">
-                          <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">
-                            {subscription.customerDetails.firstName} {subscription.customerDetails.lastName}
-                          </div>
-                          <div className="text-xs text-gray-500 truncate">
-                            {subscription.customerDetails.email}
-                          </div>
-                          <div className="text-xs text-green-600 font-medium truncate">
-                            {subscription.name}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="hidden xl:table-cell px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 min-w-[120px]">
-                      {subscription.customerDetails.phone || "N/A"}
-                    </td>
-                    <td className="hidden lg:table-cell px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap min-w-[100px]">
-                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {getTypeDisplay(subscription.type)}
-                      </span>
-                    </td>
-                    <td className="px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap min-w-[100px]">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                          subscription.status
-                        )}`}
-                      >
-                        {subscription.status}
-                      </span>
-                      <div className="lg:hidden text-xs text-gray-500 mt-1">
-                        {getTypeDisplay(subscription.type)}
-                      </div>
-                    </td>
-                    <td className="hidden sm:table-cell px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900 min-w-[100px]">
-                      ₹{subscription.totalAmount}
-                    </td>
-                    <td className="hidden lg:table-cell px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 min-w-[120px]">
-                      {subscription.nextDeliveryDate
-                        ? new Date(subscription.nextDeliveryDate).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                    <td className="px-2 sm:px-3 lg:px-6 py-4 whitespace-nowrap text-sm font-medium min-w-[100px]">
-                      <div className="flex items-center space-x-1 sm:space-x-2">
-                        <Link
-                          to={`/admin/subscriptions/${subscription._id}`}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                          title="View Details"
-                        >
-                          <EyeIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </Link>
-                        <button
-                          onClick={() =>
-                            handleDeleteSubscription(subscription._id)
-                          }
-                          disabled={deleteLoading === subscription._id}
-                          className="text-red-600 hover:text-red-900 p-1 rounded disabled:opacity-50"
-                          title="Delete Subscription"
-                        >
-                          <TrashIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </button>
-                      </div>
-                      <div className="sm:hidden text-xs text-gray-500 mt-1">
-                        ₹{subscription.totalAmount} • {subscription.nextDeliveryDate
-                          ? new Date(subscription.nextDeliveryDate).toLocaleDateString()
-                          : "N/A"}
-                      </div>
-                    </td>
+                    <td className="px-2 py-2 text-gray-500 align-top whitespace-normal break-words">{subscription.customerDetails.phone || "N/A"}</td>
+                    <td className="px-2 py-2 align-top whitespace-normal break-words"><span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">{getTypeDisplay(subscription.type)}</span></td>
+                    <td className="px-2 py-2 align-top whitespace-normal break-words"><span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(subscription.status)}`}>{subscription.status}</span></td>
+                    <td className="px-2 py-2 text-gray-900 align-top whitespace-normal break-words">₹{subscription.totalAmount}</td>
+                    <td className="px-2 py-2 text-gray-500 align-top whitespace-normal break-words">{subscription.nextDeliveryDate ? new Date(subscription.nextDeliveryDate).toLocaleDateString() : "N/A"}</td>
+                    <td className="px-2 py-2 text-gray-500 align-top whitespace-normal break-words">{subscription.endDate ? new Date(subscription.endDate).toLocaleDateString() : "N/A"}</td>
+                    <td className="px-2 py-2 text-gray-500 align-top whitespace-normal break-words"><div className="whitespace-normal break-words" title={subscription.deliveryInstructions || "No instructions"}>{subscription.deliveryInstructions || "No instructions"}</div></td>
+                    <td className="px-2 py-2 font-medium align-top whitespace-normal break-words"><div className="flex items-center space-x-2"><Link to={`/admin/subscriptions/${subscription._id}`} className="text-blue-600 hover:text-blue-900 p-1 rounded" title="View Details"><EyeIcon className="w-4 h-4" /></Link><button onClick={() => handleDeleteSubscription(subscription._id)} disabled={deleteLoading === subscription._id} className="text-red-600 hover:text-red-900 p-1 rounded disabled:opacity-50" title="Delete Subscription"><TrashIcon className="w-4 h-4" /></button></div></td>
                   </tr>
-                ))}              </tbody>
+                ))}
+              </tbody>
             </table>
           </div>
           {displaySubscriptions.length === 0 && (

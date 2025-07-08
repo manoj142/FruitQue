@@ -113,21 +113,6 @@ const generateOrderSummary = (
   return section;
 };
 
-const generatePaymentInfo = (isSubscription: boolean = false): string => {
-  let section = `💳 *Payment Options:*\n`;
-  section += `We accept the following payment methods:\n`;
-  section += `• 💰 Cash on Delivery (COD)\n`;
-  section += `• 💻 Online Payment (UPI)\n\n`;
-  
-  if (isSubscription) {
-    section += `*For subscriptions:* We recommend online payment for convenience\n\n`;
-  } else {
-    section += `*Please let us know your preferred payment method*\n\n`;
-  }
-  
-  return section;
-};
-
 const generateDeliveryAddress = (user: User | null): string => {
   let section = `📍 *Delivery Address:*\n`;
 
@@ -189,7 +174,6 @@ export const generateWhatsAppRegularOrderMessage = (
   message += generateCustomerDetails(user);
   message += generateItemsList(items, false);
   message += generateOrderSummary(total, false);
-  message += generatePaymentInfo(false);
   message += generateDeliveryAddress(user);
 
   message += `⏰ *Preferred Delivery Time:*\n`;
@@ -212,7 +196,6 @@ export const generateWhatsAppSubscriptionMessage = (
   message += generateCustomerDetails(user);
   message += generateItemsList(items, true);
   message += generateOrderSummary(total, true);
-  message += generatePaymentInfo(true);
   message += generateSubscriptionDetails();
   message += generateDeliveryAddress(user);
   message += generateSubscriptionNextSteps();
