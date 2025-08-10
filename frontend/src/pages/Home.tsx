@@ -1,4 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect      {/* Promotional Banner */}
+      <section className="w-full">
+        <div className="w-full">
+          <img
+            src="/promotional-banner.jpg"
+            alt="Fresh Delivery, Eco-Friendly Way"
+            className="w-full h-auto max-h-[50vh] object-contain bg-gradient-to-r from-orange-300 to-yellow-400"
+          />
+        </div>
+      </section>eact";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { fetchSeasonalProducts } from "../store/slices/productSlice";
@@ -24,54 +33,13 @@ const Home: React.FC = () => {
       <Hero /> {/* Features Section */}
       <Features />
       {/* Promotional Banner */}
-      <section className="py-12 bg-gradient-to-r from-green-400 to-emerald-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-6">
-              <h2 className="text-3xl font-bold text-white mb-2">
-                🌿 Fresh Delivery, Eco-Friendly Way! 🌿
-              </h2>
-              <p className="text-xl text-green-50 mb-4">
-                Fresh morning delivery • Minimal plastic packaging • Maximum
-                freshness
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-                <div className="text-3xl mb-2">⚡</div>
-                <h3 className="font-semibold mb-2">Morning Fresh</h3>
-                <p className="text-green-50">
-                  Delivered fresh between 6AM - 10AM
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-                <div className="text-3xl mb-2">🌱</div>
-                <h3 className="font-semibold mb-2">Planet Friendly</h3>
-                <p className="text-green-50">
-                  Biodegradable packaging, zero waste delivery
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-                <div className="text-3xl mb-2">✨</div>
-                <h3 className="font-semibold mb-2">Always Fresh</h3>
-                <p className="text-green-50">
-                  Picked today, delivered today, enjoyed today!
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <Link
-                to="/products"
-                className="inline-flex items-center px-8 py-4 bg-white text-green-600 font-bold rounded-full hover:bg-green-50 transition-all transform hover:scale-105 shadow-lg"
-              >
-                Shop Fresh Now
-                <ArrowRightIcon className="ml-2 h-5 w-5" />
-              </Link>
-            </div>
-          </div>
+      <section className="w-full">
+        <div className="w-full">
+          <img
+            src="/promotional-banner.jpg"
+            alt="Fresh Delivery, Eco-Friendly Way"
+            className="w-full h-auto min-h-[200px] sm:min-h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] max-h-[50vh] object-cover object-center bg-gradient-to-r from-orange-300 to-yellow-400"
+          />
         </div>
       </section>
       {/* Seasonal Products */}
