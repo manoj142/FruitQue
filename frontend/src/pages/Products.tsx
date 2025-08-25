@@ -27,44 +27,12 @@ const Products: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Promotional Banner */}
-      <section className="py-12 bg-gradient-to-r from-green-400 to-emerald-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-6">
-              <h2 className="text-3xl font-bold text-white mb-2">
-                🌿 Fresh Delivery, Eco-Friendly Way! 🌿
-              </h2>
-              <p className="text-xl text-green-50 mb-4">
-                Free morning delivery • Minimal plastic packaging • Maximum
-                freshness
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-                <div className="text-3xl mb-2">⚡</div>
-                <h3 className="font-semibold mb-2">Free & Fast</h3>
-                <p className="text-green-50">
-                  Free delivery between 6AM - 10AM
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-                <div className="text-3xl mb-2">🌱</div>
-                <h3 className="font-semibold mb-2">Planet Friendly</h3>
-                <p className="text-green-50">
-                  Biodegradable packaging, zero waste delivery
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-                <div className="text-3xl mb-2">✨</div>
-                <h3 className="font-semibold mb-2">Always Fresh</h3>
-                <p className="text-green-50">
-                  Picked today, delivered today, enjoyed today!
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <section className="w-full overflow-hidden">
+        <img
+          src="/test2.jpeg"
+          alt="Fresh Delivery, Eco-Friendly Way"
+          className="w-full h-auto max-h-[60vh] object-cover object-center"
+        />
       </section>
 
       <div className="container mx-auto px-4 py-8">

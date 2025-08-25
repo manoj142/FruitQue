@@ -191,7 +191,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               "http://localhost:5000/api/placeholder/300/250"
             }
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
         {/* Content */}
