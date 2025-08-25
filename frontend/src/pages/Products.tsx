@@ -27,12 +27,13 @@ const Products: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Promotional Banner */}
-  <img
-    src="/promotional-banner.jpg"
-    alt="Banner"
-    style={{ "backgroundPosition": "center" }}
-    className="w-full h-full object-contain"
-  />
+      <section className="w-full overflow-hidden">
+        <img
+          src="/test2.jpeg"
+          alt="Fresh Delivery, Eco-Friendly Way"
+          className="w-full h-auto max-h-[60vh] object-cover object-center"
+        />
+      </section>
 
       <div className="container mx-auto px-4 py-8">
         {/* Bowl Products Section */}

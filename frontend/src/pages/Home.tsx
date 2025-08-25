@@ -1,13 +1,4 @@
-import React, { useEffect      {/* Promotional Banner */}
-      <section className="w-full">
-        <div className="w-full">
-          <img
-            src="/promotional-banner.jpg"
-            alt="Fresh Delivery, Eco-Friendly Way"
-            className="w-full h-auto max-h-[50vh] object-contain bg-gradient-to-r from-orange-300 to-yellow-400"
-          />
-        </div>
-      </section>eact";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { fetchSeasonalProducts } from "../store/slices/productSlice";
@@ -33,14 +24,12 @@ const Home: React.FC = () => {
       <Hero /> {/* Features Section */}
       <Features />
       {/* Promotional Banner */}
-      <section className="w-full">
-        <div className="w-full">
-          <img
-            src="/promotional-banner.jpg"
-            alt="Fresh Delivery, Eco-Friendly Way"
-            className="w-full h-auto min-h-[200px] sm:min-h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] max-h-[50vh] object-cover object-center bg-gradient-to-r from-orange-300 to-yellow-400"
-          />
-        </div>
+      <section className="w-full overflow-hidden">
+        <img
+          src="/promotional-banner.jpg"
+          alt="Fresh Delivery, Eco-Friendly Way"
+          className="w-full h-auto max-h-[60vh] object-cover object-center"
+        />
       </section>
       {/* Seasonal Products */}
       <section className="py-16 bg-gray-50">
